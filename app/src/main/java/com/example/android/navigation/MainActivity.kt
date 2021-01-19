@@ -20,6 +20,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -47,6 +49,23 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
 
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
+
+        // Lock: addOnDestinationChangedListener | prevent nav gesture if not on start destination
+        /**
+         * You can prevent the drawer from being swiped anywhere other than the startDestination.
+         * All we need to do is call addOnDestinationChangedListener with a lambda that sets the
+         * DrawerLockMode depending on what destination we’re navigating to. When the id of our
+         * NavDestination matches the startDestination of our graph, we’ll unlock the drawerLayout;
+         * otherwise, we’ll lock and close the drawerLayout.
+         */
+        navController.addOnDestinationChangedListener { nc: NavController, nd: NavDestination, args: Bundle? ->
+            if (nd.id == nc.graph.startDestination) {
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            } else {
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
+        }
+
 
         // Know about nav view
         NavigationUI.setupWithNavController(binding.navView, navController)
