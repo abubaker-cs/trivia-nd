@@ -57,7 +57,7 @@ dependencies {
     // Core
     implementation "androidx.core:core-ktx:$version_core"
 
-    // Material Design
+    // Material Design for: "App Drawer"
     implementation "com.google.android.material:material:$version_material"
 
     // Navigation
